@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>CaféControl</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffd700;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #d2691e;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            margin-top: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d2691e 0%, #8b4513 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+        
+        .stat-box.highlight {
+            background: linear-gradient(135deg, #4a2c2a 0%, #8b4513 100%);
+            border: none;
+        }
+        
+        .stat-box.highlight .stat-value {
+            color: #ffd700;
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .progress-bar-bg {
+            height: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6bcf7f 100%);
+            background-size: 200% 100%;
+        }
+        
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .day-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .day-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4dabf7;
+        }
+        
+        .day-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        .alert-box {
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #51cf66;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffd43b;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        .sales-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .sale-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sale-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .sale-info p {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .sale-amount {
+            text-align: right;
+        }
+        
+        .sale-amount .amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #51cf66;
+        }
+        
+        .sale-amount .price {
+            font-size: 12px;
+            color: #ffd700;
+        }
+        
+        .delete-btn {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .icon {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>☕ CaféControl</h1>
+        <p>Gestión de Ventas</p>
+    </div>
+
+    <!-- Configuración -->
+    <div class="card">
+        <div class="card-title">
+            <span>⚙️</span> Configuración del Mes
+        </div>
+        <div class="input-group">
+            <label>Objetivo de Ventas (€)</label>
+            <input type="number" id="monthlyGoal" placeholder="Ej: 5000" step="100">
+        </div>
+        <div class="input-group">
+            <label>Días de Venta Disponibles</label>
+            <input type="number" id="totalDays" placeholder="Ej: 22" min="1" max="31">
+        </div>
+        <button class="btn btn-secondary" onclick="saveConfig()">Guardar Configuración</button>
+    </div>
+
+    <!-- Nueva Venta -->
+    <div class="card">
+        <div class="card-title">
+            <span>➕</span> Nueva Venta
+        </div>
+        <div class="input-group">
+            <label>Kilos Vendidos</label>
+            <input type="number" id="kilos" placeholder="0.0" step="0.1">
+        </div>
+        <div class="input-group">
+            <label>Total Venta (€)</label>
+            <input type="number" id="totalVenta" placeholder="0.00" step="0.01">
+        </div>
+        <div class="input-group">
+            <label>Fecha</label>
+            <input type="date" id="fechaVenta">
+        </div>
+        <button class="btn btn-primary" onclick="addSale()">Registrar Venta</button>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="card">
+        <div class="card-title">
+            <span>📊</span> Resumen
+        </div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="totalSalesDisplay">€0</div>
+                <div class="stat-label">Total Ventas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="totalKilosDisplay">0kg</div>
+                <div class="stat-label">Total Kilos</div>
+            </div>
+            <div class="stat-box highlight">
+                <div class="stat-value" id="avgPriceDisplay">€0.00</div>
+                <div class="stat-label">Precio Medio/kg</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="progressPercent">0%</div>
+                <div class="stat-label">Del Objetivo</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-header">
+                <span id="progressText">€0 / €0</span>
+                <span id="remainingText">Faltan: €0</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Análisis de Días -->
+    <div class="card">
+        <div class="card-title">
+            <span>📅</span> Análisis Temporal
+        </div>
+        <div class="days-grid">
+            <div class="day-stat">
+                <div class="day-number" id="daysUsed">0</div>
+                <div class="day-label">Días Usados</div>
+            </div>
+            <div class="day-stat">
+                <div class="day-number" id="daysRemaining">0</div>
+                <div class="day-label">Días Restantes</div>
+            </div>
+            <div class="day-stat">
+                <div class="day-number" id="avgDaily">€0</div>
+                <div class="day-label">Media/Día</div>
+            </div>
+            <div class="day-stat">
+                <div class="day-number" id="projection">€0</div>
+                <div class="day-label">Proyección Mes</div>
+            </div>
+        </div>
+        <div id="statusMessage" class="alert-box hidden"></div>
+    </div>
+
+    <!-- Historial -->
+    <div class="card">
+        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span><span>📋</span> Historial</span>
+            <button onclick="clearAll()" style="background: none; border: none; color: #ff6b6b; font-size: 13px;">Borrar Todo</button>
+        </div>
+        <div id="salesList" class="sales-list">
+            <div class="empty-state">No hay ventas registradas</div>
+        </div>
+    </div>
+
+    <script>
+        let config = { monthlyGoal: 0, totalDays: 0 };
+        let sales = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('fechaVenta').valueAsDate = new Date();
+            loadData();
+            updateUI();
+        });
+
+        function saveConfig() {
+            const goal = parseFloat(document.getElementById('monthlyGoal').value);
+            const days = parseInt(document.getElementById('totalDays').value);
+            
+            if (!goal || !days) {
+                showAlert('Completa ambos campos', 'warning');
+                return;
+            }
+            
+            config = { monthlyGoal: goal, totalDays: days };
+            saveData();
+            updateUI();
+            showAlert('Configuración guardada', 'success');
+        }
+
+        function addSale() {
+            const kilos = parseFloat(document.getElementById('kilos').value);
+            const total = parseFloat(document.getElementById('totalVenta').value);
+            const fecha = document.getElementById('fechaVenta').value;
+            
+            if (!kilos || !total || !fecha) {
+                showAlert('Completa todos los campos', 'warning');
+                return;
+            }
+            
+            sales.push({
+                id: Date.now(),
+                fecha,
+                kilos,
+                total,
+                precio: total / kilos
+            });
+            
+            sales.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            saveData();
+            updateUI();
+            
+            document.getElementById('kilos').value = '';
+            document.getElementById('totalVenta').value = '';
+            document.getElementById('kilos').focus();
+            
+            showAlert('Venta registrada', 'success');
+        }
+
+        function deleteSale(id) {
+            sales = sales.filter(s => s.id !== id);
+            saveData();
+            updateUI();
+        }
+
+        function clearAll() {
+            if (confirm('¿Borrar todo el historial?')) {
+                sales = [];
+                saveData();
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // Config
+            document.getElementById('monthlyGoal').value = config.monthlyGoal || '';
+            document.getElementById('totalDays').value = config.totalDays || '';
+            
+            // Totales
+            const totalKilos = sales.reduce((a, s) => a + s.kilos, 0);
+            const totalVentas = sales.reduce((a, s) => a + s.total, 0);
+            const precioMedio = totalKilos ? totalVentas / totalKilos : 0;
+            
+            document.getElementById('totalSalesDisplay').textContent = `€${totalVentas.toFixed(0)}`;
+            document.getElementById('totalKilosDisplay').textContent = `${totalKilos.toFixed(1)}kg`;
+            document.getElementById('avgPriceDisplay').textContent = `€${precioMedio.toFixed(2)}`;
+            
+            // Progreso
+            const progress = config.monthlyGoal ? (totalVentas / config.monthlyGoal) * 100 : 0;
+            document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('progressPercent').textContent = `${progress.toFixed(0)}%`;
+            document.getElementById('progressText').textContent = `€${totalVentas.toFixed(0)} / €${config.monthlyGoal.toFixed(0)}`;
+            
+            const remaining = Math.max(0, config.monthlyGoal - totalVentas);
+            document.getElementById('remainingText').textContent = `Faltan: €${remaining.toFixed(0)}`;
+            
+            // Días
+            const uniqueDays = new Set(sales.map(s => s.fecha)).size;
+            const daysLeft = Math.max(0, config.totalDays - uniqueDays);
+            const avgDaily = uniqueDays ? totalVentas / uniqueDays : 0;
+            const projection = config.totalDays ? avgDaily * config.totalDays : 0;
+            
+            document.getElementById('daysUsed').textContent = uniqueDays;
+            document.getElementById('daysRemaining').textContent = daysLeft;
+            document.getElementById('avgDaily').textContent = `€${avgDaily.toFixed(0)}`;
+            document.getElementById('projection').textContent = `€${projection.toFixed(0)}`;
+            
+            // Status
+            const statusDiv = document.getElementById('statusMessage');
+            if (config.monthlyGoal && daysLeft > 0) {
+                const needed = remaining / daysLeft;
+                if (projection >= config.monthlyGoal) {
+                    statusDiv.className = 'alert-box alert-success';
+                    statusDiv.innerHTML = `✅ ¡Vas bien! Proyectas €${projection.toFixed(0)}`;
+                } else {
+                    statusDiv.className = 'alert-box alert-danger';
+                    statusDiv.innerHTML = `⚠️ Necesitas €${needed.toFixed(0)}/día para cumplir`;
+                }
+                statusDiv.classList.remove('hidden');
+            } else {
+                statusDiv.classList.add('hidden');
+            }
+            
+            // Lista
+            const listDiv = document.getElementById('salesList');
+            if (sales.length === 0) {
+                listDiv.innerHTML = '<div class="empty-state">No hay ventas registradas</div>';
+            } else {
+                listDiv.innerHTML = sales.map(s => `
+                    <div class="sale-item">
+                        <div class="sale-info">
+                            <h4>${formatDate(s.fecha)}</h4>
+                            <p>${s.kilos.toFixed(1)} kg</p>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div class="sale-amount">
+                                <div class="amount">€${s.total.toFixed(2)}</div>
+                                <div class="price">€${s.precio.toFixed(2)}/kg</div>
+                            </div>
+                            <button class="delete-btn" onclick="deleteSale(${s.id})">🗑</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+        }
+
+        function saveData() {
+            localStorage.setItem('cafeConfig', JSON.stringify(config));
+            localStorage.setItem('cafeSales', JSON.stringify(sales));
+        }
+
+        function loadData() {
+            const c = localStorage.getItem('cafeConfig');
+            const s = localStorage.getItem('cafeSales');
+            if (c) config = JSON.parse(c);
+            if (s) sales = JSON.parse(s);
+        }
+
+        function showAlert(msg, type) {
+            const div = document.createElement('div');
+            div.style.cssText = `position: fixed; top: 50px; left: 50%; transform: translateX(-50%); 
+                background: ${type === 'success' ? '#28a745' : '#ffc107'}; color: white; 
+                padding: 12px 24px; border-radius: 25px; font-weight: 600; z-index: 1000;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);`;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 2000);
+        }
+    </script>
+</body>
+</html>
